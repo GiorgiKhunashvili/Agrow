@@ -1,0 +1,116 @@
+{% extends 'layout.html' %}
+{% block content %}
+<article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/'+ post.author.image_file) }}" alt="ups">
+      <div class="media-body">
+        <div class="article-metadata">
+          {% if post.author == current_user %}
+            <a class="mr-2" href="/account">{{ post.author.username }}</a>
+          {% else %}
+            <a class="mr-2" href="{{ url_for('user_info', username=post.author.username) }}">{{ post.author.username }}</a>
+          {% endif %}
+          <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+          {% if post.author == current_user %}
+            <div>
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('update_post', post_id=post.id) }}">Update</a>
+              <button type="button"class="btn btn-danger btn-sm m-1" data-toggle='modal' data-target='#deleteModel' name="button">Delete</button>
+            </div>
+          {% endif %}
+        </div>
+        <h2 class="article-title">{{ post.title }}</h2>
+        <p class="article-content">{{ post.content }}</p>
+        <img src="{{ url_for('static',filename='post_pics/' + post.photo) }}" class="img-fluid" alt="Responsive image">
+
+        <p class="article-title">views:{{ post.view }}</p>
+        
+
+          {% if likes %}
+          <form action="{{ url_for('post_unlike', post_id=post.id) }}", method="POST">
+
+           <input class="btn btn-primary" type="submit" value="Unlike {{ number_of_likes }}">
+          </form>
+          {% else %}
+          <form action="{{ url_for('post_like', post_id=post.id) }}", method="POST">
+
+           <input class="btn btn-primary" type="submit" value="like {{ number_of_likes }}">
+          </form>
+           {% endif %}
+            
+      </div>
+</article>
+{% if current_user.is_authenticated %}
+<div class="content-section">
+  <form method="POST" action="" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">{{ legend }}</legend>
+
+      <div class="form-group">
+        {{ form.comment_text.label(class='form-control-label') }}
+        {% if form.comment_text.errors %}
+          {{ form.comment_text(class='form-control form-control-lg is-invalid') }}
+          <div class="invalid-feedback">
+            {% for error in form.comment_text.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{ form.comment_text(class='form-control form-control-lg') }}
+
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {{ form.submit(class='btn btn-outline-info') }}
+      </div>
+    </fieldset>
+  </form>
+</div>
+{% endif %}
+
+  <h1>Comments</h1>
+
+
+
+{% for comm in comments %}
+
+  <article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + comm.author_comm.image_file) }}">
+      <div class="media-body">
+        <div class="article-metadata">
+          {% if post.author == current_user %}
+            <a class="mr-2" href="{{ url_for('account') }}">{{ comm.author_comm.username }}</a>
+            <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+            <a class="mr-2" href="{{ url_for('user_posts', username=post.author.username) }}">View all post by {{ comm.author_comm.username }}</a>
+          {% else %}
+            <a class="mr-2" href="{{ url_for('user_info', username=post.author.username) }}">{{ comm.author_comm.username }}</a>                        
+            <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+            <a class="mr-2" href="{{ url_for('user_posts', username=post.author.username) }}">View all post by {{ comm.author_comm.username }}</a>
+          {% endif %}
+          </div>
+          <h2><a class="article-title" href="{{ url_for('post', post_id=post.id) }}">{{ comm.title }}</a></h2>
+           <p class="article-content">{{ comm.text_comment }}</p>
+    </div>
+  </article>
+{% endfor %}
+<!-- Modal -->
+<div class="modal fade" id="deleteModel" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModelLabel">Delete Post?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
+          <input class="btn btn-danger" type="submit" value="Delete">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

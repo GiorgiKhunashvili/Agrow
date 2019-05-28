@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% block content %}
+	<div class="content-section">
+		<div class="media">
+			<img class="rounded-circle account-img" src="{{ image_file }}">
+			<div class="media-body">
+				<h2 class="account-heading">{{ user.username }}</h2>
+				<p class="text-secondary">{{ user.email }}</p>
+				<p>{{user_followers.user_username}}</p>
+			{% for followers in user_followers %}
+				<p class="text-secondary">followers: {{ followers.user_username }}</p>
+			{% endfor %}
+
+			{% for following in user_followings %}
+				<p class="text-secondary"> following: {{ following.user_username_foll }}</p>
+			{% endfor %}
+			</div>
+
+
+	<form method="POST", enctype="multipart/form-data">
+		<div class="form-group">
+			{% if current_user.username in list_of_followers %}
+              <a class="btn btn-danger" href="{{ url_for('unfollow_user', username=user.username) }}">Unfollow</a>
+			{% else %}
+				{{ form.submit(class='btn btn-outline-info') }}
+			{% endif %}
+
+		</div>
+	</form>
+
+		</div>
+{% endblock content %}

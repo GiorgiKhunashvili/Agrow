@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="card mb-3">
+  <img class="card-img-top" src="{{ fruit.image_link }}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{ fruit.title }}</h5>
+    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+    {% if current_user.admin == True %}
+    <form method="POST" enctype="multipart/form-data">
+    	<div class="form-group">
+			{{ form.Success(class='btn btn-success') }}
+		</div>
+    </form>
+    <form action="{{ url_for('delete_fruit', fruit_name=fruit.title) }}" method="POST">
+      <input class="btn btn-danger" type="submit" value="Delete">
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% for dt in data %}
+{% if dt.to_admin == False %}
+	<div class="card" style="width: 18rem;">
+  <img class="card-img-top" src="{{ dt.image_link }}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{ dt.title }}</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <a href="{{url_for('fruit_info', fruit_name=dt.title)}}" class="btn btn-primary">ვრცლად</a>
+  </div>
+</div>
+{% endif %}
+{% endfor %}
+
+{% endblock %}
